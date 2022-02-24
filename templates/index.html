@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/static/reset.css">
+    <style>
+        #bg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #FFFFFF;
+        }
+
+        #head {
+            background: rgb(54, 54, 54);
+            height: 50px;
+        }
+
+        #head p {
+            color: #FFFFFF;
+            text-align: center;
+            font-size: 24px;
+            line-height: 50px;
+        }
+
+        #head>p>span:first-child {
+            color: red;
+        }
+
+        #head>p>span:last-child {
+            color: green
+        }
+
+        #main {
+            background-color: rgb(100, 100, 100);
+            width: 800px;
+            margin-top: 50px;
+            height: 500px;
+            border-width: 3px;
+            border-color: rgb(54, 54, 54);
+            border: solid;
+            box-sizing: border-box;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        #transformType {
+            text-align: center;
+            height: 50px;
+            border-bottom: 3px solid rgb(54, 54, 54);
+        }
+
+        #transformType label {
+            color: #FFFFFF;
+            font-size: 18px;
+            line-height: 50px;
+        }
+
+        #coord {
+            border-bottom: solid 3px rgb(54, 54, 54);
+        }
+
+        #coord p {
+            position: relative;
+            height: 50px;
+            text-align: center;
+        }
+
+        #coord input {
+            text-align: center;
+            font-size: 18px;
+            width: 200px;
+            border-radius: 0px;
+            position: absolute;
+            height: 30px;
+            top: 10px;
+            box-sizing: border-box;
+        }
+
+        #coord label {
+            color: #FFFFFF;
+            font-size: 18px;
+            right: 500px;
+            line-height: 50px;
+            position: absolute;
+        }
+
+        #transform {
+            text-align: center;
+            padding-top: 20px;
+            border-bottom: solid 3px rgb(54, 54, 54);
+        }
+
+        #transform>button,#batch>button {
+            background-color: rgb(100, 100, 100);
+            color: #FFFFFF;
+            border-radius: 0px;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        #batch{
+            margin-top: 20px;
+            text-align: center;
+        }
+        #batch>img{
+            width: 650px;
+        }
+        #batch>input{
+            margin-top: 30px;
+        }
+        #coordFile{
+            border-radius: 0px;
+        }
+        #foot {
+            position: absolute;
+            height: 100px;
+            width: 100%;
+            background-color: rgb(54, 54, 54);
+            bottom: 0px;
+            z-index: 9999;
+        }
+        #foot p{
+            text-align: center;
+            font-size: 20px;
+            color: red;
+        }
+        #foot p:first-child{
+            margin: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="bg">
+        <div id="head">
+            <p><span>上海城建坐标</span>与<span>WGS84</span>在线转换工具</p>
+        </div>
+        <div id="main">
+            <div id="transformType">
+                <input id="wgs84tosh" type="radio" name="type" value="1" checked><label for="wgs84tosh">WGS84 →
+                    上海城建坐标</label>
+                <input id="shtowgs84" type="radio" name="type" value="0"><label for="shtowgs84">上海城建坐标 → WGS8484</label>
+            </div>
+            <div id="coord">
+                <p id="srcCoord">
+                    <label>WGS84坐标:</label><input type="text" name="srcCoord" placeholder="longitude , latitude">
+                </p>
+                <p id="dstCoord">
+                    <label>上海城建坐标:</label><input type="text" name="dstCoord" placeholder="x , y">
+                </p>
+            </div>
+            <div id="transform">
+                <button>Transform</button>
+            </div>
+            <div id="batch">
+                <img src="/static/template.png" alt="坐标文件格式参考">
+                <br>
+                <input type="file" name="coordFile" id="coordFile" accept="text/csv">
+                <button id="batchBt">Batch Transform</button>
+            </div>
+        </div>
+        <div id="foot">
+            <p>郑重声明</p>
+            <p>上海市城建坐标系坐标参数是保密数据,请勿将本站数据用于学习之外用途,大批量坐标转换请寻求专业合规单位</p>
+        </div>
+    </div>
+</body>
+<script>
+    var typeRadio_1 = document.getElementById("wgs84tosh");
+    var typeRadio_2 = document.getElementById("shtowgs84");
+    var srcP = document.getElementById("srcCoord");
+    var dstP = document.getElementById("dstCoord");
+    var bt = document.getElementsByTagName("button")[0];
+    var batchBt=document.getElementById("batchBt");
+    typeRadio_1.onclick = () => {
+        if (typeRadio_1.checked) {
+            srcP.getElementsByTagName("label")[0].innerText = "WGS84坐标";
+            srcP.getElementsByTagName("input")[0].placeholder = "longitude , latitude";
+            srcP.getElementsByTagName("input")[0].value = "";
+            dstP.getElementsByTagName("label")[0].innerText = "上海城建坐标";
+            dstP.getElementsByTagName("input")[0].placeholder = "x , y";
+            dstP.getElementsByTagName("input")[0].value = "";
+        }
+        else {
+            srcP.getElementsByTagName("label")[0].innerText = "上海城建坐标";
+            srcP.getElementsByTagName("input")[0].placeholder = "x , y";
+            srcP.getElementsByTagName("input")[0].value = "";
+            dstP.getElementsByTagName("label")[0].innerText = "WGS84坐标";
+            dstP.getElementsByTagName("input")[0].placeholder = "longitude , latitude";
+            dstP.getElementsByTagName("input")[0].value = "";
+        }
+
+    }
+    typeRadio_2.onclick = () => {
+        if (!typeRadio_2.checked) {
+            srcP.getElementsByTagName("label")[0].innerText = "WGS84坐标";
+            srcP.getElementsByTagName("input")[0].placeholder = "longitude , latitude";
+            srcP.getElementsByTagName("input")[0].value = "";
+            dstP.getElementsByTagName("label")[0].innerText = "上海城建坐标";
+            dstP.getElementsByTagName("input")[0].placeholder = "x , y";
+            dstP.getElementsByTagName("input")[0].value = "";
+        }
+        else {
+            srcP.getElementsByTagName("label")[0].innerText = "上海城建坐标";
+            srcP.getElementsByTagName("input")[0].placeholder = "x , y";
+            srcP.getElementsByTagName("input")[0].value = "";
+            dstP.getElementsByTagName("label")[0].innerText = "WGS84坐标";
+            dstP.getElementsByTagName("input")[0].placeholder = "longitude , latitude";
+            dstP.getElementsByTagName("input")[0].value = "";
+        }
+    }
+    bt.addEventListener("click", () => {
+        var srcCoord = document.getElementsByName("srcCoord")[0].value;
+        if (!srcCoord) {
+            alert("源坐标不能为空！");
+            return;
+        }
+
+        if (srcCoord.search('^([0-9]|([+-]{1}[0-9]{1}))[0-9]*\.?[0-9]*\ *[，,]{1}\ *[+-]?[0-9]+\.?[0-9]*$') == -1) {
+            alert("源坐标输入格式不合法！");
+            return;
+        }
+        srcCoord = srcCoord.replace('，', ',');
+        var xy = srcCoord.split(',');
+        var x = Number.parseFloat(xy[0]);
+        var y = Number.parseFloat(xy[1]);
+        if (typeRadio_1.checked) {
+            if (x < -180 || x > 180 || y < -90 || y > 90) {
+                alert("经纬度输入范围不合法!");
+                return;
+            }
+        }
+        var tType = typeRadio_1.checked ? 0 : 1;
+        var xhr = new XMLHttpRequest();
+        xhr.timeout=3000;
+        xhr.ontimeout=()=>{
+            alert("请求超时！");
+        }
+        xhr.open('GET', `/point?type=${tType}&x=${x}&y=${y}`);
+        xhr.send()
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    data = JSON.parse(xhr.responseText);
+                    document.getElementsByName("dstCoord")[0].value = data['x'] + ' , ' + data['y'];
+                } else {
+                    alert(`请求失败!\n${xhr.status}\n${xhr.statusText}`);
+                }
+            }
+        }
+        
+    })
+    batchBt.addEventListener('click',()=>{
+        var inputFile=document.getElementById("coordFile");
+        var files=inputFile.files;
+        if(files.length==0){
+            alert("请选择带批量转换的坐标文件!");
+            return;
+        }
+        var coordFile=files[0];
+        if(coordFile.size>3*1024*1024){
+            alert("文件大小不能超过3M");
+            return;
+        }
+        var tType = typeRadio_1.checked ? 0 : 1;
+        var data=new FormData();
+        data.append("type",tType);
+        data.append("file",coordFile);
+        var xhr=new XMLHttpRequest();
+        xhr.timeout=5000;
+        xhr.ontimeout=()=>{
+            alert('请求超时!');
+            return;
+        }
+        xhr.open('POST','/batch');
+        xhr.send(data);
+        xhr.onreadystatechange=()=>{
+            if(xhr.readyState==4){
+                if(xhr.status>=200 && xhr.status<300){
+                    var blob=new Blob([xhr.response]);
+                    var link=document.createElement("a");
+                    link.href=window.URL.createObjectURL(blob);
+                    link.download=coordFile.name;
+                    link.click();
+                }
+                else{
+                    alert(`请求失败!\n${xhr.status}\n${xhr.statusText}`);
+                }
+            }
+        }
+
+    })
+</script>
+
+</html>
